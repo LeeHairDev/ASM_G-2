@@ -1,6 +1,7 @@
 import dotenv from "dotenv";
 import joi from "joi";
 import Category from "../models/category";
+import Product from "../models/products";
 dotenv.config();
 
 const categorySchema = joi.object({
@@ -118,13 +119,17 @@ const Delete = async (req, res) => {
     //   `${process.env.API_URL}/products/${req.params.id}`,
     //   req.body
     // );
-    const product = await Category.findByIdAndDelete(req.params.id);
-    if (!product) {
+    const category = await Category.findByIdAndDelete(req.params.id);
+    if (!category) {
       console.log("Xóa danh mục không thành công");
     }
+    await Product.updateMany(
+      { category: category?._id },
+      { $unset: { category: "" } }
+    );
     return res.json({
       message: "Xóa danh mục thành công",
-      product,
+      category,
     });
   } catch (error) {
     return res.status(400).json({

@@ -119,7 +119,7 @@ const onFinish = async (data: any) => {
       >
         <Select>
           {props.dataCate.map((item) => (
-            <Select.Option key={item._id} value={item._id}>
+            <Select.Option key={item._id} value={item._id ? item._id : ""}>
               {item.name}
             </Select.Option>
           ))}

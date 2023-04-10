@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import joi from "joi";
 import Product from "../models/products";
-import category from "../models/category";
+import Category from "../models/category";
 dotenv.config();
 
 const productsSchema = joi.object({
@@ -74,7 +74,7 @@ const Create = async (req, res) => {
     //   req.body
     // );
     const product  = await Product.create(req.body);
-    await category.findByIdAndUpdate(product.category,{
+    await Category.findByIdAndUpdate(product.category,{
       $addToSet: { products: product._id}
     })
     if (!product) {
@@ -130,6 +130,9 @@ const Delete = async (req, res) => {
     if (!product) {
       console.log("Xóa sản phẩm không thành công");
     }
+    await Category.findByIdAndUpdate(product?.category, {
+      $pull: { products: product?.id },
+    });
     return res.json({
       message: "Xóa dữ liệu thành công",
       product,
